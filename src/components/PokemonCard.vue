@@ -1,32 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue' // 🛑 CORRECCIÓN 1: Eliminamos defineEmits ya que no se usa.
+import {} from 'vue' // 🛑 Ahora SÍ necesitamos defineEmits
 
-// Definición de Interfaz para un tipado limpio (Error 4)
+// Definición de Interfaz para un tipado limpio
 interface Attack {
   nombre: string
   dano: number
 }
 
+// Definimos los eventos que puede emitir este componente
+const emit = defineEmits(['selectPokemon'])
+
 // ----------------------------------------------------
-// 1. AÑADIR PROPS DE DATOS DE COMBATE
+// 1. PROPS DE DATOS DE COMBATE
 // ----------------------------------------------------
 const props = defineProps({
+  // Las props se mantienen, pero incluimos un ID para identificar la carta al emitir.
+  id: { type: Number, required: true }, // Nuevo: Necesitamos un ID único
   nombre: { type: String, required: true },
   sprite: { type: String, required: true },
   tipo: { type: String, required: true },
   nivel: { type: Number, default: 1 },
   salud: { type: Number, default: 100 },
-  // 🛑 CORRECCIÓN 4: Usamos un tipado limpio para el array de ataques.
   ataques: { type: Array as () => Attack[], default: () => [] },
+  habilidad: { type: String, default: 'Ninguna' },
 })
 
 // ----------------------------------------------------
-// 2. ESTADO INTERNO Y EVENTO DE CLIC
+// 2. FUNCIÓN DE SELECCIÓN Y EMISIÓN
 // ----------------------------------------------------
-const showDetails = ref(false)
-
-const toggleDetails = () => {
-  showDetails.value = !showDetails.value
+const selectCard = () => {
+  // Emitimos un evento, enviando TODOS los datos del Pokémon.
+  emit('selectPokemon', props)
 }
 
 // ----------------------------------------------------
@@ -59,8 +63,8 @@ const getTipoFondo = (tipo: string) => {
       return '#ADD8E6'
     case 'Planta':
       return '#90EE90'
-    case 'Normal':
-      return '#F5F5F5'
+    case 'jefe':
+      return '#Ff0000'
     default:
       return '#E0E0E0'
   }
@@ -68,11 +72,7 @@ const getTipoFondo = (tipo: string) => {
 </script>
 
 <template>
-  <div
-    class="pokemon-card"
-    :style="{ borderColor: getTipoColor(props.tipo) }"
-    @click="toggleDetails"
-  >
+  <div class="pokemon-card" :style="{ borderColor: getTipoColor(props.tipo) }" @click="selectCard">
     <div class="card-header" :style="{ backgroundColor: getTipoFondo(props.tipo) }">
       <h3 class="pokemon-name">{{ props.nombre }}</h3>
       <span class="pokemon-type" :style="{ color: getTipoColor(props.tipo) }">{{
@@ -83,34 +83,11 @@ const getTipoFondo = (tipo: string) => {
     <div class="card-body">
       <img :src="props.sprite" :alt="props.nombre" class="pokemon-sprite" />
     </div>
-
-    <Transition name="fade-slide">
-      <div v-if="showDetails" class="details-popup">
-        <div class="detail-row">
-          <span>Nivel:</span> <strong>{{ props.nivel }}</strong>
-        </div>
-        <div class="detail-row">
-          <span>Salud (HP):</span> <strong class="hp-value">{{ props.salud }}</strong>
-        </div>
-
-        <div class="attacks-list">
-          <h4>Ataques:</h4>
-          <ul>
-            <li v-for="ataque in props.ataques" :key="ataque.nombre">
-              {{ ataque.nombre }} ({{ ataque.dano }} Daño)
-            </li>
-            <li v-if="props.ataques.length === 0">Sin ataques definidos.</li>
-          </ul>
-        </div>
-      </div>
-    </Transition>
   </div>
 </template>
 
 <style scoped>
-/* ---------------------------------------------------- */
-/* Estilos (Se mantienen igual) */
-/* ---------------------------------------------------- */
+/* ... (Estilos de la tarjeta se mantienen igual, pero elimina los estilos de .details-popup, .fade-slide, etc.) ... */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 .pokemon-card {
@@ -121,13 +98,13 @@ const getTipoFondo = (tipo: string) => {
   text-align: center;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+  font-family: 'Press Start 2P', monospace;
+  background-color: white;
+  cursor: pointer; /* Indica que es clickeable */
+  position: relative;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
-  font-family: 'Press Start 2P', monospace;
-  background-color: white;
-  cursor: pointer;
-  position: relative;
 }
 
 .pokemon-card:hover {
@@ -174,52 +151,5 @@ const getTipoFondo = (tipo: string) => {
   height: 150px;
   image-rendering: pixelated;
   filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.3));
-}
-
-.details-popup {
-  padding: 10px;
-  background-color: #333;
-  color: #fff;
-  border-top: 3px solid #ffe033;
-  text-align: left;
-  font-size: 0.7em;
-}
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-  border-bottom: 1px dashed #666;
-}
-
-.hp-value {
-  color: #ff4500;
-}
-
-.attacks-list h4 {
-  margin: 10px 0 5px 0;
-  color: #90ee90;
-  font-size: 1em;
-}
-
-.attacks-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.attacks-list li {
-  margin-left: 5px;
-}
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-slide-enter-from,
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
 }
 </style>

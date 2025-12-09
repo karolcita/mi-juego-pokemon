@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// Asegúrate de que la ruta sea correcta: '../components/PokemonCard.vue'
 import PokemonCard from '../components/PokemonCard.vue'
+import PokemonDetailsModal from '../components/PokemonDetailsModal.vue' // 🛑 Nuevo
 
 // ----------------------------------------------------
-// 1. Datos de los Pokémon con información de combate
+// 1. ESTADO DEL MODAL
+// ----------------------------------------------------
+const isModalVisible = ref(false)
+const selectedPokemon = ref(null)
+
+// ----------------------------------------------------
+// 2. DATOS DE LOS POKÉMON (Añadimos ID para facilitar el seguimiento)
 // ----------------------------------------------------
 const pokemonList = ref([
   {
+    id: 25,
     nombre: 'Pikachu',
     sprite:
       'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
@@ -21,6 +28,7 @@ const pokemonList = ref([
     ],
   },
   {
+    id: 6,
     nombre: 'Charizard',
     sprite:
       'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png',
@@ -33,33 +41,54 @@ const pokemonList = ref([
       { nombre: 'Ataque Aéreo', dano: 50 },
     ],
   },
-  // 🛑 MODIFICACIÓN: GROUDON PRIMIGENIO (Jefe Final)
   {
-    nombre: 'Groudon', // Nuevo nombre
+    id: 383,
+    nombre: 'Groudon ',
     sprite:
       'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/383.png',
-    tipo: 'Jefe Final', // Nuevo tipo de display
+    tipo: 'Jefe Final',
     nivel: 100,
-    salud: 1_000_000, // Salud masiva
-    habilidad: 'Tierra del Fin (Reduce daño eléctrico)', // Habilidad pasiva
+    salud: 1_000_000,
+    habilidad: 'Tierra del Fin (Reduce daño eléctrico)',
     ataques: [
       { nombre: 'Ascenso Draco', dano: 120 },
       { nombre: 'Fisura', dano: 300 },
     ],
   },
 ])
+
+// ----------------------------------------------------
+// 3. MANEJADORES DE EVENTOS
+// ----------------------------------------------------
+
+/**
+ * Recibe los datos del Pokémon seleccionado desde el evento de PokemonCard.
+ * @param {object} pokemonData - Todos los datos de las props del Pokémon.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function handleSelectPokemon(pokemonData: any) {
+  // Almacena los datos y muestra el modal
+  selectedPokemon.value = pokemonData
+  isModalVisible.value = true
+}
+
+function closeModal() {
+  isModalVisible.value = false
+  selectedPokemon.value = null
+}
 </script>
 
 <template>
   <div>
     <main>
       <h1>Pokedex</h1>
-      <p>¡Haz clic en una tarjeta para ver los detalles de combate!</p>
+      <p>¡Haz clic en una tarjeta para abrir la ventana emergente de detalles!</p>
 
       <div class="card-container">
         <PokemonCard
           v-for="pokemon in pokemonList"
-          :key="pokemon.nombre"
+          :key="pokemon.id"
+          :id="pokemon.id"
           :nombre="pokemon.nombre"
           :sprite="pokemon.sprite"
           :tipo="pokemon.tipo"
@@ -67,28 +96,34 @@ const pokemonList = ref([
           :salud="pokemon.salud"
           :ataques="pokemon.ataques"
           :habilidad="pokemon.habilidad"
+          @select-pokemon="handleSelectPokemon"
         />
       </div>
     </main>
+
+    <PokemonDetailsModal
+      v-if="selectedPokemon"
+      :is-visible="isModalVisible"
+      :pokemon="selectedPokemon"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <style scoped>
-/* NOTA: Los estilos deben ser <style scoped> en una vista, no <style> global */
 h1 {
   font-family: 'Press Start 2P', monospace;
+  font-size: 2rem;
   color: #cc0000;
   text-shadow: 3px 3px 0 #3b4cca;
   margin-bottom: 20px;
 }
-
 p {
   font-family: 'Press Start 2P', monospace;
   color: black;
   font-size: 0.8em;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
-
 .card-container {
   display: flex;
   justify-content: center;
