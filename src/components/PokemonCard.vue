@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // defineProps se usa sin ser importado.
 const props = defineProps({
   nombre: { type: String, required: true },
@@ -8,7 +8,7 @@ const props = defineProps({
 
 // Función simple para colores (usando una función en lugar de computed si hay error)
 // Usamos una función simple para obtener el color dinámico si computed da problemas:
-const getTipoColor = (tipo) => {
+const getTipoColor = (tipo: string) => {
   switch (tipo) {
     case 'Eléctrico':
       return '#FFD700' // Borde Dorado
@@ -27,7 +27,7 @@ const getTipoColor = (tipo) => {
   }
 }
 
-const getTipoFondo = (tipo) => {
+const getTipoFondo = (tipo: string) => {
   switch (tipo) {
     case 'Eléctrico':
       return '#F0E68C' // Fondo Banner

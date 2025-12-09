@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // Esto es correcto y no debería dar error en <script setup>
 import PokemonCard from './components/PokemonCard.vue'
 </script>
