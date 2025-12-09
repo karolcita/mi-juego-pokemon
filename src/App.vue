@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// Esto es correcto y no debería dar error en <script setup>
-import PokemonCard from './components/PokemonCard.vue'
+import { RouterView, RouterLink } from 'vue-router'
+// NOTA: RouterView y RouterLink son necesarios para la navegación.
 </script>
 
 <template>
@@ -9,86 +9,86 @@ import PokemonCard from './components/PokemonCard.vue'
       alt="Logo de Pokébola"
       class="logo"
       src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg"
-      width="125"
-      height="125"
+      width="60"
+      height="60"
     />
+    <h1>Pokémon</h1>
+
+    <nav>
+      <RouterLink to="/map">🗺️ Mapa</RouterLink>
+      <RouterLink to="/missions">📜 Misiones</RouterLink>
+      <RouterLink to="/pvp">⚔️ PVP</RouterLink>
+    </nav>
   </header>
 
   <main>
-    <h1>Pokedex</h1>
-    <p>Atrapa a tus Pokémon favoritos</p>
-
-    <div class="card-container">
-      <PokemonCard
-        nombre="Pikachu"
-        sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
-        tipo="Eléctrico"
-      />
-
-      <PokemonCard
-        nombre="Charizard"
-        sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png"
-        tipo="Fuego"
-      />
-
-      <PokemonCard
-        nombre="Groudon"
-        sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/383.png"
-        tipo="Jefe Final"
-      />
-    </div>
+    <RouterView />
   </main>
 </template>
 
 <style>
-/* Estilos globales para App.vue */
-body {
-  background-image: url('src/assets/bg.png');
+/* Estilos Globales (pueden ser movidos a assets/base.css si lo prefieres) */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+#app {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  background-image: url('./assets/bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-}
-
-/* Asegúrate que el <style> de App.vue NO esté 'scoped' */
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 header {
-  line-height: 1.5;
-  padding-bottom: 20px;
-}
-
-main {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 5px solid #3b4cca;
+  background-color: rgba(158, 156, 156, 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  flex-shrink: 0;
 }
 
 h1 {
   font-family: 'Press Start 2P', monospace;
+  font-size: 1.2em;
   color: #cc0000;
-  text-shadow: 3px 3px 0 #3b4cca;
-  margin-bottom: 20px;
+  text-shadow: 2px 2px 0 #3b4cca;
+  margin: 0;
+  margin-right: 20px;
 }
 
-p {
-  font-family: 'Press Start 2P', monospace;
-  color: black;
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #3b4cca;
+  font-weight: bold;
+  padding-bottom: 5px;
+  transition: color 0.2s;
 }
 
-.card-container {
-  display: flex;
-  justify-content: center;
+nav a.router-link-exact-active {
+  color: #cc0000;
+  border-bottom: 3px solid #cc0000;
+}
 
-  padding-top: 30px;
+main {
+  flex: 1;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  background-color: transparent;
 }
 </style>
