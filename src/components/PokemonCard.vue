@@ -6,19 +6,20 @@ const props = defineProps({
   tipo: { type: String, required: true },
 })
 
-// Funciones para calcular estilos basados en la prop 'tipo'
+// Función simple para colores (usando una función en lugar de computed si hay error)
+// Usamos una función simple para obtener el color dinámico si computed da problemas:
 const getTipoColor = (tipo: string) => {
   switch (tipo) {
     case 'Eléctrico':
-      return '#FFD700'
+      return '#FFD700' // Borde Dorado
     case 'Fuego':
-      return '#FF4500'
+      return '#FF4500' // Borde Rojo-Naranja
     case 'Agua':
-      return '#1E90FF'
+      return '#1E90FF' // Borde Azul Fuerte
     case 'Planta':
-      return '#32CD32'
+      return '#32CD32' // Borde Verde Lima
     case 'Normal':
-      return '#A9A9A9'
+      return '#A9A9A9' // Borde Gris Oscuro
     default:
       return '#333'
   }
@@ -27,7 +28,7 @@ const getTipoColor = (tipo: string) => {
 const getTipoFondo = (tipo: string) => {
   switch (tipo) {
     case 'Eléctrico':
-      return '#F0E68C'
+      return '#F0E68C' // Fondo Banner
     case 'Fuego':
       return '#FFA07A'
     case 'Agua':
@@ -56,6 +57,11 @@ const getTipoFondo = (tipo: string) => {
 </template>
 
 <style scoped>
+/* NOTA: Para evitar errores de @import en algunos setups,
+     puedes mover la importación de la fuente a tu archivo CSS global (ej: index.css o main.css).
+     Si eso no es posible, la dejamos aquí: */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .pokemon-card {
   border: 5px solid var(--border-color, #333);
   border-radius: 12px;
@@ -71,6 +77,7 @@ const getTipoFondo = (tipo: string) => {
   background-color: white;
 }
 
+/* El resto de estilos se mantiene igual */
 .pokemon-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);

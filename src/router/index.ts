@@ -9,7 +9,14 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
-
+    {
+      path: '/pokemon',
+      name: 'pokemoncard',
+      // 🛑 CORRECCIÓN DE RUTA: Asegúrate de que la ruta relativa sea correcta.
+      // Desde 'src/router/' necesitas subir (..) para llegar a 'src/',
+      // y luego bajar a 'views/'.
+      component: () => import('../views/PokemonView.vue'),
+    },
     {
       path: '/map',
       name: 'map',
